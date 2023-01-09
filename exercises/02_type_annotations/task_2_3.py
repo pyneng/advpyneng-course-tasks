@@ -6,7 +6,12 @@
 аннотация должна описывать параметры и возвращаемое значение.
 
 Проверить код с помощью mypy, если возникли какие-то ошибки, исправить их.
+
+Тестом для этого раздела является mypy, после добавления аннотации mypy должен
+отрабатывать без ошибок для данного кода, как минимум, в варианте запуска
+mypy task_2_*.py, а в идеале также и с добавлением --strict: mypy task_2_*.py --strict
 """
+from pprint import pprint
 
 
 class Topology:
@@ -43,4 +48,6 @@ topology_example = {
 
 if __name__ == "__main__":
     t1 = Topology(topology_example)
-    print(t1.topology)
+    pprint(t1.topology)
+    t1.delete_link(("R1", "Eth0/0"), ("SW1", "Eth0/1"))
+    pprint(t1.topology)
