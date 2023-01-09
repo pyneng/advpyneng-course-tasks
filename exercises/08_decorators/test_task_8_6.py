@@ -22,6 +22,7 @@ def test_func_created():
 
 def test_total_order_exception():
     with pytest.raises(ValueError) as excinfo:
+
         @task_8_6.total_order
         class DoThing:
             pass

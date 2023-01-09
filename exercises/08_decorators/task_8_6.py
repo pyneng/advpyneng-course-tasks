@@ -64,4 +64,3 @@ class IPAddress:
 
     def __lt__(self, other):
         return self._ip < other._ip
-

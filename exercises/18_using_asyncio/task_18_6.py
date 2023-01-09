@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 18.6
 
 Создать декоратор для сопрограмм retry, который выполняет декорируемую сопрограмму повторно,
@@ -36,7 +36,7 @@ In [5]: send_show(device_params, 'sh clock')
 
 На каждой итерации должен проверяться результат функции. То есть не просто
 повторяем вызов функции n раз, а каждый раз проверяем его и необходимость повторения.
-'''
+"""
 import asyncio
 from scrapli import AsyncScrapli
 from scrapli.exceptions import ScrapliException

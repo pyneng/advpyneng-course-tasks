@@ -13,11 +13,12 @@ class BaseSSH:
 
     async def connect(self):
         with async_timeout.timeout(self.timeout):
-            self._ssh = await asyncssh.connect(self.host,
-                                               username=self.username,
-                                               password=self.password)
+            self._ssh = await asyncssh.connect(
+                self.host, username=self.username, password=self.password
+            )
             self._writer, self._reader, self._stderr = await self._ssh.open_session(
-                term_type="Dumb", term_size=(200, 24))
+                term_type="Dumb", term_size=(200, 24)
+            )
             await self._reader.read(self._MAX_READ)
         return self
 
@@ -31,4 +32,3 @@ class BaseSSH:
     async def close(self):
         self._ssh.close()
         await self._ssh.wait_closed()
-

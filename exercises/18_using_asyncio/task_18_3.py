@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 18.3
 
 Создать сопрограмму (coroutine) get_all_cdp_neighbors. Сопрограмма
@@ -31,7 +31,7 @@ sh_cdp_neighbors_detail_sw1.txt, sh_cdp_neighbors_detail_r1.txt
 и создавать дополнительные функции.
 Для заданий в этом разделе нет тестов!
 
-'''
+"""
 import re
 from pprint import pprint
 import asyncio
@@ -41,13 +41,13 @@ import aiofiles
 
 async def get_one_neighbor(filename):
     async with aiofiles.open(filename) as f:
-        line = ''
+        line = ""
         while True:
-            while not 'Device ID' in line:
+            while "Device ID" not in line:
                 line = await f.readline()
             neighbor = line
             async for line in f:
-                if '----------' in line:
+                if "----------" in line:
                     break
                 neighbor += line
             yield neighbor
@@ -58,10 +58,11 @@ async def get_one_neighbor(filename):
 
 def parse_neighbor(output):
     regex = (
-        r'Device ID: (\S+).+?'
-        r' IP address: (?P<ip>\S+).+?'
-        r'Platform: (?P<platform>\S+ \S+), .+?'
-        r', Version (?P<ios>\S+),')
+        r"Device ID: (\S+).+?"
+        r" IP address: (?P<ip>\S+).+?"
+        r"Platform: (?P<platform>\S+ \S+), .+?"
+        r", Version (?P<ios>\S+),"
+    )
 
     result = {}
     match = re.search(regex, output, re.DOTALL)
@@ -72,7 +73,7 @@ def parse_neighbor(output):
 
 
 async def main():
-    cdp_filename = 'sh_cdp_neighbors_detail_sw1.txt'
+    cdp_filename = "sh_cdp_neighbors_detail_sw1.txt"
     async for neighbor in get_one_neighbor(cdp_filename):
         pprint(parse_neighbor(neighbor))
 

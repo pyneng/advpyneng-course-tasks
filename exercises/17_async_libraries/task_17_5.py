@@ -54,8 +54,6 @@ import asyncio
 import yaml
 
 
-
-
 if __name__ == "__main__":
     with open("devices_scrapli.yaml") as f:
         devices = yaml.safe_load(f)

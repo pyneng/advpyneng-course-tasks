@@ -56,5 +56,6 @@ def test_class():
     ), "Метод scan должен возвращать кортеж с двумя списками"
     reach, unreach = return_value
     assert (
-        (sorted(reach), sorted(unreach)) == correct_return_value
-    ), "Функция возвращает неправильное значение"
+        sorted(reach),
+        sorted(unreach),
+    ) == correct_return_value, "Функция возвращает неправильное значение"

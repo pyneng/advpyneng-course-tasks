@@ -70,12 +70,14 @@ import asyncio
 import yaml
 
 
-
-if __name__ == '__main__':
-    with open('devices_scrapli.yaml') as f:
+if __name__ == "__main__":
+    with open("devices_scrapli.yaml") as f:
         devices = yaml.safe_load(f)
     # примеры вызова функции (не будут работать до выполнения задания)
-    print(asyncio.run(configure_router(devices[0], correct_commands + commands_with_errors)))
+    print(
+        asyncio.run(
+            configure_router(devices[0], correct_commands + commands_with_errors)
+        )
+    )
     print(asyncio.run(configure_router(devices[0], correct_commands)))
     print(asyncio.run(configure_router(devices[0], commands_with_errors[1])))
-

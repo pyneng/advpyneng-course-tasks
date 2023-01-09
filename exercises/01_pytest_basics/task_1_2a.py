@@ -40,7 +40,6 @@ def convert_mac_list(mac_list, strict=False):
     return converted_mac_list
 
 
-
 if __name__ == "__main__":
     mac_list1 = ["1a1b.2c2d.3e3f", "111122223333", "11-11-22-22-33-33"]
     mac_list2 = ["1a1b.2c2d.3e3f", "1111WWWW3333", "11-11-22-22-33-33"]
@@ -51,4 +50,3 @@ if __name__ == "__main__":
         pprint(convert_mac_list(mac_list2, strict=True))
     except ValueError as error:
         print(error)
-

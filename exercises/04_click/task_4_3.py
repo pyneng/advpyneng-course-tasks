@@ -189,4 +189,3 @@ def send_command_to_devices(devices, threads, show=None, config=None):
         for device, future in zip(devices, futures):
             result_dict[device["host"]] = future.result()
     return result_dict
-
