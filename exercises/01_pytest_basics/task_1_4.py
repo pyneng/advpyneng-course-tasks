@@ -2,113 +2,74 @@
 """
 Задание 1.4
 
-Написать тесты для класса CiscoTelnet. Тесты должны проверять:
+Написать тесты для функции send_show. Тесты должны проверять:
 
-* создание подключения Telnet при создании экземпляра. Один из признаков
-  тут - отсутствие исключений при создании экземлпяра. Также можно
-  проверить значение self.prompt
-* проверка параметра secret в методе __init__ - при значении по умолчанию None
-  (пароль не указывается), надо проверить, что подключение выполнилось без исключений
-  и self.prompt равен # или >. Проверить лучше оба значения, так как на оборудовании
-  может быть настроен privilege. Если указан правильный пароль secret, проверить что
-  получается без ошибок выполнить команды sh clock и sh run | i hostname.
-  Плюс self.prompt должен быть равен #
-* работу метода send_show_command
-* проверить работу экземпляра в менеджере контекста
-* приватные методы и переменные мы не проверяем потому что они могут меняться,
-  так как это не public API класса и лучше в тестах не привязываться к ним
+* "нормальную" работу функции при подключении к доступному устройству
+* проверить, что функция возвращает правильный результат при передаче команды строки
+  и при передаче списка команд. И в том и в том случае должен возвращаться
+  словарь в котором ключ команда, а значение вывод команды
+* поведение функции при возникновении исключения при подключении (функция
+  перехватывает исключения и делает print). В этом случае, можно сделать
+  проверку на то правильное ли выводится сообщение на stdout, например, что
+  в stdout был вывод IP-адреса
+
+
+Для проверки разных ситуаций - доступное устройство, недоступное и так далее
+в файле devices.yaml создано несколько групп устройств:
+* reachable_ssh_telnet - это устройства на которых доступен Telnet и SSH, прописаны
+  правильные логин и пароли
+* reachable_ssh_telnet_wrong_auth_password - это доступное устройство на котором разрешены
+  SSH/Telnet, но настроен неправильный пароль auth_password
+* reachable_telnet_only - это доступное устройство на котором разрешен только Telnet
+  и прописаны правильные логин и пароли
+* unreachable - это недоступное устройство
+
+Для корректной работы тестов надо написать в файле devices.yaml параметры ваших устройств
+или создать аналогичный файл с другим именем.
+Плюс надо соответственно настроить устройства так чтобы где нужно был только
+Telnet или неправильный пароль соответственно.
 
 В целом тут свобода творчества и один из нюансов задания как раз в том чтобы
 придумать что именно и как тестировать. В задании даны несколько идей для старта,
 но остальное надо продумать самостоятельно.
 
-Тут аналогично 1.3 можно создать отдельный файл с устройствами. В отличии от 1.3,
-в этом задании при подключении к оборудованию могут генерироваться исключения,
-если что-то пошло не так.
-Тест должен проверять, что исключения генерируются и какие именно исключения.
-
 Тест(ы) написать в файле заданий.
 
-Ограничение: класс менять нельзя.
+Ограничение: функцию менять нельзя.
 Для заданий этого раздела нет тестов для проверки тестов.
 """
-import time
-import telnetlib
-import re
+import socket
+from pprint import pprint
 
 import yaml
+from scrapli import Scrapli
+from scrapli.exceptions import ScrapliException
+from paramiko.ssh_exception import SSHException
 
 
-class CiscoTelnet:
-    def __init__(
-        self,
-        host,
-        username,
-        password,
-        secret=None,
-        disable_paging=True,
-        read_timeout=5,
-        encoding="utf-8",
-    ):
-        self.host = host
-        self.username = username
-        self.prompt = ">"
-        self.read_timeout = read_timeout
-        self.encoding = encoding
-
-        self._telnet = telnetlib.Telnet(host)
-        self._read_until("Username")
-        self._write_line(username)
-        self._read_until("Password")
-        self._write_line(password)
-
-        match_index, match_obj, output = self._telnet.expect(
-            [b">", b"#"], timeout=self.read_timeout
-        )
-        if not match_obj:
-            raise ValueError("Cisco prompt not found")
-        self.hostname = re.search(r"(\S+)[#>]", output.decode(self.encoding)).group(1)
-        if match_index == 0 and secret:
-            self._write_line("enable")
-            self._read_until("Password")
-            self._write_line(secret)
-            self._read_until("#")
-            self.prompt = "#"
-        elif match_index == 1:
-            self.prompt = "#"
-        if disable_paging:
-            self._write_line("terminal length 0")
-            self._read_until(self.prompt)
-
-    def _read_until(self, line):
-        output = self._telnet.read_until(
-            line.encode(self.encoding), timeout=self.read_timeout
-        )
-        return output.decode(self.encoding).replace("\r\n", "\n")
-
-    def _write_line(self, line):
-        self._telnet.write(f"{line}\n".encode(self.encoding))
-
-    def send_show_command(self, command):
-        self._write_line(command)
-        command_output = self._read_until(self.prompt)
-        return command_output
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._telnet.close()
+def send_show(device, show_commands):
+    transport = device.get("transport") or "system"
+    host = device.get("host")
+    if type(show_commands) == str:
+        show_commands = [show_commands]
+    cmd_dict = {}
+    print(f">>> Connecting to {host}")
+    try:
+        with Scrapli(**device) as ssh:
+            for cmd in show_commands:
+                reply = ssh.send_command(cmd)
+                cmd_dict[cmd] = reply.result
+        print(f"<<< Received output from {host}")
+        return cmd_dict
+    except (ScrapliException, SSHException, socket.timeout, OSError) as error:
+        print(f"Device {host}, Transport {transport}, Error {error}")
 
 
 if __name__ == "__main__":
-    r1_params = {
-        "host": "192.168.100.1",
-        "username": "cisco",
-        "password": "cisco",
-        "secret": "cisco",
-    }
-    with CiscoTelnet(**r1_params) as r1:
-        print(r1.send_show_command("sh clock"))
-        print(r1.send_show_command("sh ip int br"))
-        print(r1.send_show_command("sh run | i hostname"))
+    with open("devices.yaml") as f:
+        devices = yaml.safe_load(f)
+    for dev_type, device_list in devices.items():
+        print(dev_type.upper())
+        for dev in device_list:
+            output = send_show(dev, "sh clock")
+            pprint(output, width=120)

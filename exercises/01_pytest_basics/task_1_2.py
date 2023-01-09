@@ -2,44 +2,71 @@
 """
 Задание 1.2
 
-Написать тесты для класса Network. Тесты должны проверять:
+Написать тест или тесты для функции get_int_vlan_map. Тест должен проверять,
+что словари, которые возвращает функция, содержат правильные данные.
 
-* переменные экземпляров network и addresses (правильное значение)
-* метод __iter__ (возвращает итератор)
-  * надо проверить, что при итерации возвращаются IP-адреса и правильные
-    IP-адреса (достаточно проверить 2 адреса)
-* метод __len__:
-  * проверка количества IP-адресов
-* метод __getitem__:
-  * проверить обращение по положительному, отрицательному индексу
-  * проверить, что при обращении к не существующему индексу, генерируется
-    исключение IndexError
+Пример вызова функции показан в файле заданий.
 
+Тест(ы) написать в файле заданий.
 
-Тесты написать в файле заданий. Разделить на тесты по своему усмотрению.
-
-Ограничение: класс менять нельзя.
+Ограничение: функцию менять нельзя.
 Для заданий этого раздела нет тестов для проверки тестов.
 """
-import ipaddress
+from pprint import pprint
+import re
 
 
-class Network:
-    def __init__(self, network):
-        self.network = network
-        subnet = ipaddress.ip_network(self.network)
-        self.addresses = tuple([str(ip) for ip in subnet.hosts()])
+def convert_mac(mac_address):
+    regex = re.compile(
+        r"[0-9a-f]{4}[.:-][0-9a-f]{4}[.:-][0-9a-f]{4}"
+        r"|([0-9a-f]{2}[.:-]){5}[0-9a-f]{2}"
+        r"|[0-9a-f]{12}"
+    )
+    if regex.fullmatch(mac_address):
+        mac = re.sub(r"[-.:]", "", mac_address)
+    else:
+        raise ValueError(f"'{mac_address}' does not appear to be a MAC address")
 
-    def __iter__(self):
-        return iter(self.addresses)
-
-    def __len__(self):
-        return len(self.addresses)
-
-    def __getitem__(self, index):
-        return self.addresses[index]
+    new_mac = [mac[index : index + 2] for index in range(0, len(mac), 2)]
+    return ":".join(new_mac)
 
 
 if __name__ == "__main__":
-    # пример создания экземпляра
-    net1 = Network('10.1.1.192/30')
+    pprint(convert_mac("1a1b.2c2d.3e3f"))
+    pprint(convert_mac("1111.2222.3333"))
+    pprint(convert_mac("111122223333"))
+    pprint(convert_mac("1111-2222-3333"))
+    # errors
+    try:
+        pprint(convert_mac("1111-2222-33"))
+    except ValueError as error:
+        print(error)
+    try:
+        pprint(convert_mac("1111-2222-33WW"))
+    except ValueError as error:
+        print(error)
+
+
+"""
+Должна поддерживаться конвертация из таких форматов:
+* 1a1b2c2d3e3f
+* 1a1b:2c2d:3e3f
+* 1a1b.2c2d.3e3f
+* 1a1b-2c2d-3e3f
+* 1a-1b-2c-2d-3e-3f
+* 1a.1b.2c.2d.3e.3f
+* 1a:1b:2c:2d:3e:3f (оставить без изменений)
+
+Функция также должна проверять, что строка, которая была передана функции,
+содержит правильный MAC-адрес. MAC-адрес считается правильным, если:
+- каждый символ, кроме разделителей ":-.", это символ в диапазоне a-f или 0-9
+- не считая разделители, в MAC-адресе должно быть 12 символов
+
+Проверок выше достаточно для этого задания, то есть не обязательно проверять формат
+адреса более точно.
+
+Если как аргумент была передана строка, которая не содержит правильный
+MAC-адрес, сгенерировать исключение ValueError (... должно быть заменено на
+переданное значение, примеры ниже): ValueError: '...' does not appear to be a
+MAC address
+"""
