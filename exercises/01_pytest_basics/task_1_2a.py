@@ -4,18 +4,16 @@
 
 Написать тест или тесты для функции convert_mac_list.
 
-Функция convert_mac конвертирует mac-адрес из разных форматов в формат 1a:1b:2c:2d:3e:3f.
-Должна поддерживаться конвертация из таких форматов:
-* 1a1b2c2d3e3f
-* 1a1b:2c2d:3e3f
-* 1a1b.2c2d.3e3f
-* 1a1b-2c2d-3e3f
-* 1a-1b-2c-2d-3e-3f
-* 1a.1b.2c.2d.3e.3f
-* 1a:1b:2c:2d:3e:3f (оставить без изменений)
+Функция convert_mac_list конвертирует список MAC-адресов из разных форматов в
+1a:1b:2c:2d:3e:3f.
 
-Если как аргумент была передана строка, которая не содержит правильный
-MAC-адрес, функция генерирует исключение ValueError.
+Если все MAC-адреса правильные, функция должна вернуть список этих же
+MAC-адресов, но в формате 1a:1b:2c:2d:3e:3f. Если какие-то MAC-адреса
+неправильные (функция convert_mac сгенерировала исключение ValueError), в
+зависимости от параметра strict:
+* strict равен True - генерируется исключение ValueError
+* strict равен False - неправильные MAC-адреса игнорируются и в список
+  добавляются только те, которые прошли проверку
 
 Тест должен проверять работу функции для поддерживаемых форматов и для
 неправильных данных. Примеры вызова функции написаны в коде задания.
@@ -26,34 +24,31 @@ MAC-адрес, функция генерирует исключение ValueEr
 Для заданий этого раздела нет тестов для проверки тестов.
 """
 from pprint import pprint
-import re
+from task_1_2 import convert_mac
 
 
-def convert_mac(mac_address):
-    regex = re.compile(
-        r"[0-9a-f]{4}[.:-][0-9a-f]{4}[.:-][0-9a-f]{4}"
-        r"|([0-9a-f]{2}[.:-]){5}[0-9a-f]{2}"
-        r"|[0-9a-f]{12}"
-    )
-    if regex.fullmatch(str(mac_address)):
-        mac = re.sub(r"[-.:]", "", mac_address)
-    else:
-        raise ValueError(f"'{mac_address}' does not appear to be a MAC address")
+def convert_mac_list(mac_list, strict=False):
+    converted_mac_list = []
+    for mac in mac_list:
+        try:
+            new_mac = convert_mac(mac)
+        except ValueError:
+            if strict:
+                raise
+        else:
+            converted_mac_list.append(new_mac)
+    return converted_mac_list
 
-    new_mac = [mac[index : index + 2] for index in range(0, len(mac), 2)]
-    return ":".join(new_mac)
 
 
 if __name__ == "__main__":
-    pprint(convert_mac("1a1b.2c2d.3e3f"))
-    pprint(convert_mac("111122223333"))
-    pprint(convert_mac("1111-2222-3333"))
+    mac_list1 = ["1a1b.2c2d.3e3f", "111122223333", "11-11-22-22-33-33"]
+    mac_list2 = ["1a1b.2c2d.3e3f", "1111WWWW3333", "11-11-22-22-33-33"]
+    pprint(convert_mac_list(mac_list1, strict=False))
+    pprint(convert_mac_list(mac_list2, strict=False))
     # errors
     try:
-        pprint(convert_mac("1111-2222-33"))
+        pprint(convert_mac_list(mac_list2, strict=True))
     except ValueError as error:
         print(error)
-    try:
-        pprint(convert_mac("1111-2222-33WW"))
-    except ValueError as error:
-        print(error)
+
