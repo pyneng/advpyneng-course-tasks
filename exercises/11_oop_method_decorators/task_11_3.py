@@ -22,7 +22,7 @@
 надо чтобы выполнялась именно sh run:
 
 In [2]: r1_params = {
-   ...:     "host": "192.168.100.1",
+   ...:     "host": "192.168.139.1",
    ...:     "username": "cisco",
    ...:     "password": "cisco",
    ...:     "secret": "cisco",
@@ -35,14 +35,14 @@ In [4]: r1 = CiscoTelnet(**r1_params)
 
 In [11]: print(r1.cfg)
 sh run | i ^interface Loop
-interface Loopback100
+interface Loopback139
 interface Loopback200
 R1#
 
 In [12]: r1.send_config("interface loopback22")
     ...: print(r1.cfg)
 sh run | i ^interface Loop
-interface Loopback100
+interface Loopback139
 interface Loopback200
 R1#
 
@@ -51,7 +51,7 @@ In [13]: time.sleep(5)
     ...:
 sh run | i ^interface Loop
 interface Loopback22
-interface Loopback100
+interface Loopback139
 interface Loopback200
 R1#
 
@@ -146,7 +146,7 @@ class CiscoTelnet:
 
 if __name__ == "__main__":
     r1_params = {
-        "host": "192.168.100.1",
+        "host": "192.168.139.1",
         "username": "cisco",
         "password": "cisco",
         "secret": "cisco",

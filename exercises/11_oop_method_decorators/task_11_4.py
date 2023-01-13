@@ -7,19 +7,19 @@
 
 Пример создания экземпляра класса:
 
-In [3]: nata = User('nata')
+In [3]: user1 = User('user1')
 
 После этого, должна быть доступна переменная username:
-In [4]: nata.username
-Out[4]: 'nata'
+In [4]: user1.username
+Out[4]: 'user1'
 
 Переменная username должна быть доступна только для чтения:
 
-In [5]: nata.username = 'user'
+In [5]: user1.username = 'user'
 ---------------------------------------------------------------------------
 AttributeError                            Traceback (most recent call last)
 <ipython-input-5-eba76ef1ed86> in <module>
-----> 1 nata.username = 'user'
+----> 1 user1.username = 'user'
 
 AttributeError: can't set attribute
 
@@ -28,11 +28,11 @@ AttributeError: can't set attribute
 пока пользователь не установил пароль, при обращении к переменной должно
 генерироваться исключение ValueError:
 
-In [6]: nata.password
+In [6]: user1.password
 ---------------------------------------------------------------------------
 ValueError                                Traceback (most recent call last)
 <ipython-input-6-7527817bf03d> in <module>
-----> 1 nata.password
+----> 1 user1.password
 ...
 ValueError: Надо установить пароль!
 
@@ -44,13 +44,13 @@ ValueError: Надо установить пароль!
 Если проверки не прошли, надо вывести сообщение об ошибке и запросить пароль еще раз:
 (Эта часть задания не тестируется, но ее все равно надо реализовать!)
 
-In [7]: nata.password = 'sadf'
-Пароль слишком короткий. Введите пароль еще раз: sdlkjfksnatasdfsd
+In [7]: user1.password = 'sadf'
+Пароль слишком короткий. Введите пароль еще раз: sdlkjfksuser1sdfsd
 Пароль содержит имя пользователя. Введите пароль еще раз: asdfkpeorti2435
 Пароль установлен
 
 Если пароль прошел проверки, должно выводиться сообщение "Пароль установлен"
 
-In [8]: nata.password = 'sadfsadfsadf'
+In [8]: user1.password = 'sadfsadfsadf'
 Пароль установлен
 """

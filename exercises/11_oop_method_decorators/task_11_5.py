@@ -13,7 +13,7 @@
 In [1]: from task_11_5 import CiscoTelnet
 
 In [3]: r1_params = {
-   ...:     "host": "192.168.100.1",
+   ...:     "host": "192.168.139.1",
    ...:     "username": "cisco",
    ...: }
 
@@ -23,7 +23,7 @@ Enter password: cisco
 In [5]: r1.send_show_command("sh clock")
 Out[5]: 'sh clock\n*09:56:47.563 UTC Tue Sep 21 2021\nR1>'
 
-In [6]: r1 = CiscoTelnet.input_params(host="192.168.100.1")
+In [6]: r1 = CiscoTelnet.input_params(host="192.168.139.1")
 Enter password: cisco
 Enter username: cisco
 
@@ -120,7 +120,7 @@ class CiscoTelnet:
 
 if __name__ == "__main__":
     r1_params = {
-        "host": "192.168.100.1",
+        "host": "192.168.139.1",
         "username": "cisco",
         "password": "cisco",
         "secret": "cisco",
