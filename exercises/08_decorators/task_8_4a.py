@@ -17,28 +17,28 @@ In [2]: @retry(times=3, delay=5)
     ..: def send_show_command(device, show_command):
     ..:     print('Подключаюсь к', device['host'])
     ..:     try:
-    ..:         with ConnectHandler(**device) as ssh:
+    ..:         with Netmiko(**device) as ssh:
     ..:             ssh.enable()
     ..:             result = ssh.send_command(show_command)
     ..:         return result
-    ..:     except (NetMikoAuthenticationException, NetMikoTimeoutException):
+    ..:     except (ReadException, NetmikoBaseException, SSHException) as error:
     ..:         return None
     ..:
 
 In [3]: send_show_command(device_params, 'sh clock')
-Подключаюсь к 192.168.100.1
+Подключаюсь к 192.168.139.1
 Out[4]: '*16:35:59.723 UTC Fri Oct 18 2019'
 
 In [5]: device_params['password'] = '123123'
 
 In [6]: send_show_command(device_params, 'sh clock')
-Подключаюсь к 192.168.100.1
+Подключаюсь к 192.168.139.1
 Повторное подключение через 5 сек
-Подключаюсь к 192.168.100.1
+Подключаюсь к 192.168.139.1
 Повторное подключение через 5 сек
-Подключаюсь к 192.168.100.1
+Подключаюсь к 192.168.139.1
 Повторное подключение через 5 сек
-Подключаюсь к 192.168.100.1
+Подключаюсь к 192.168.139.1
 
 
 Тест проверяет декоратор на другой функции (не на send_show_command).
@@ -48,15 +48,12 @@ In [6]: send_show_command(device_params, 'sh clock')
 Ограничение: Функцию send_show_command менять нельзя, можно только применить декоратор.
 """
 
-from netmiko import (
-    ConnectHandler,
-    NetMikoAuthenticationException,
-    NetMikoTimeoutException,
-)
+from netmiko import Netmiko, NetmikoBaseException, ReadException
+from paramiko.ssh_exception import SSHException
 
 device_params = {
     "device_type": "cisco_ios",
-    "host": "192.168.100.1",
+    "host": "192.168.139.1",
     "username": "cisco",
     "password": "cisco",
     "secret": "cisco",
@@ -64,13 +61,13 @@ device_params = {
 
 
 def send_show_command(device, show_command):
-    print("Подключаюсь к", device["host"])
+    print(f"Подключаюсь к {device['host']}")
     try:
-        with ConnectHandler(**device) as ssh:
+        with Netmiko(**device) as ssh:
             ssh.enable()
             result = ssh.send_command(show_command)
         return result
-    except (NetMikoAuthenticationException, NetMikoTimeoutException):
+    except (ReadException, NetmikoBaseException, SSHException) as error:
         return None
 
 

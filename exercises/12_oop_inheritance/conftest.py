@@ -1,7 +1,7 @@
 import re
 import yaml
 import pytest
-from netmiko import ConnectHandler
+from netmiko import Netmiko
 
 
 def test_attr_or_method(obj, attr=None, method=None):
@@ -55,7 +55,7 @@ def r1_test_telnet_connection():
     r1_params = devices[0]
     options = {"device_type": "cisco_ios_telnet", "timeout": 5}
     r1_params.update(options)
-    r1 = ConnectHandler(**r1_params)
+    r1 = Netmiko(**r1_params)
     r1.enable()
     yield r1
     r1.disconnect()

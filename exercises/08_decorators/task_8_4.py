@@ -17,16 +17,16 @@ In [2]: @retry(times=3)
     ..: def send_show_command(device, show_command):
     ..:     print('Подключаюсь к', device['host'])
     ..:     try:
-    ..:         with ConnectHandler(**device) as ssh:
+    ..:         with Netmiko(**device) as ssh:
     ..:             ssh.enable()
     ..:             result = ssh.send_command(show_command)
     ..:         return result
-    ..:     except SSHException:
+    ..:     except (ReadException, NetmikoBaseException, SSHException) as error:
     ..:         return None
     ..:
 
 In [3]: send_show_command(device_params, 'sh clock')
-Подключаюсь к 192.168.100.1
+Подключаюсь к 192.168.139.1
 Out[3]: '*14:22:01.566 UTC Mon Mar 5 2018'
 
 In [4]: device_params['password'] = '123123'
@@ -34,10 +34,10 @@ In [4]: device_params['password'] = '123123'
 Обратите внимание, что если указано, что повторить попытку надо 3 раза,
 то это три раза в дополнение к первому, то есть все подключение будет 4 раза:
 In [5]: send_show_command(device_params, 'sh clock')
-Подключаюсь к 192.168.100.1
-Подключаюсь к 192.168.100.1
-Подключаюсь к 192.168.100.1
-Подключаюсь к 192.168.100.1
+Подключаюсь к 192.168.139.1
+Подключаюсь к 192.168.139.1
+Подключаюсь к 192.168.139.1
+Подключаюсь к 192.168.139.1
 
 Тест проверяет декоратор на другой функции (не на send_show_command).
 Значения в словаре device_params можно менять, если используются
@@ -46,15 +46,12 @@ In [5]: send_show_command(device_params, 'sh clock')
 Ограничение: Функцию send_show_command менять нельзя, можно только применить декоратор.
 """
 
-from netmiko import (
-    ConnectHandler,
-    NetMikoAuthenticationException,
-    NetMikoTimeoutException,
-)
+from netmiko import Netmiko, NetmikoBaseException, ReadException
+from paramiko.ssh_exception import SSHException
 
 device_params = {
     "device_type": "cisco_ios",
-    "host": "192.168.100.1",
+    "host": "192.168.139.1",
     "username": "cisco",
     "password": "cisco",
     "secret": "cisco",
@@ -62,14 +59,14 @@ device_params = {
 
 
 def send_show_command(device, show_command):
-    print("Подключаюсь к", device["host"])
+    print(f"Подключаюсь к {device['host']}")
     try:
-        with ConnectHandler(**device) as ssh:
+        with Netmiko(**device) as ssh:
             ssh.enable()
             result = ssh.send_command(show_command)
         return result
-    except (NetMikoAuthenticationException, NetMikoTimeoutException) as error:
-        print(error)
+    except (ReadException, NetmikoBaseException, SSHException) as error:
+        return None
 
 
 if __name__ == "__main__":
