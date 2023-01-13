@@ -57,11 +57,8 @@ import re
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-from netmiko import (
-    Netmiko,
-    NetmikoBaseException,
-    ReadException
-)
+from netmiko import Netmiko, NetmikoBaseException
+from paramiko.ssh_exception import SSHException
 
 
 def parse_cdp(output):
