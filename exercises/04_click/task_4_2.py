@@ -5,15 +5,17 @@
 Создать интерфейс командной строки для скрипта:
 
 * аргумент command - команда которую надо отправить на оборудование
-* опция --yaml-params, с коротким вариантом -y - YAML файл с параметрами подключения к оборудованию (devices.yaml). Тип click.File
-* опция --threads, с коротким вариантом -t - количество потоков. Значение по умолчанию - 5, диапазон возможных значений 1-10.
+* опция --yaml-params, с коротким вариантом -y - YAML файл с параметрами
+  подключения к оборудованию (devices.yaml). Тип click.File
+* опция --threads, с коротким вариантом -t - количество потоков. Значение по
+  умолчанию - 5, диапазон возможных значений 1-10.
 
 Применить декораторы к функции cli!
 
-В функции cli должна вызываться функция send_command_to_devices с правильными аргументами:
-список словарей с параметрами подключения к устройствам, команда, кол-во потоков.
-Значения аргументов для функции send_command_to_devices должны быть получены из
-аргументов скрипта (из click).
+В функции cli должна вызываться функция send_command_to_devices с правильными
+аргументами: список словарей с параметрами подключения к устройствам, команда,
+кол-во потоков.  Значения аргументов для функции send_command_to_devices должны
+быть получены из аргументов скрипта (из click).
 
 Help скрипта:
 
@@ -38,30 +40,31 @@ Error: Invalid value for '--threads' / '-t': 20 is not in the valid range of 1 t
 
 
 Функции send_show_command и send_command_to_devices менять нельзя.
-Для правильной работы тестов надо написать в файле devices.yaml правильные параметры
-подключения к оборудованию.
+Для правильной работы тестов надо написать в файле devices.yaml правильные
+параметры подключения к оборудованию.
 
 """
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from pprint import pprint
 import yaml
-from cisco_telnet_class import CiscoTelnet
+from netmiko import Netmiko
 
 
 def send_show_command(device, command):
-    with CiscoTelnet(**device) as t:
-        output = t.send_show_command(command)
-    return output
+    with Netmiko(**device) as ssh:
+        ssh.enable()
+        result = ssh.send_command(command)
+    return result
 
 
-def send_command_to_devices(devices, command, threads):
+def send_command_to_devices(devices, command, threads=5):
     results = []
     with ThreadPoolExecutor(max_workers=threads) as executor:
-        futures = [
+        task_list = [
             executor.submit(send_show_command, device, command) for device in devices
         ]
-        for future in as_completed(futures):
-            results.append(future.result())
+        for task in task_list:
+            results.append(task.result())
     return results
 
 

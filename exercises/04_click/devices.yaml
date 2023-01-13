@@ -1,12 +1,18 @@
-- ip: 192.168.100.1
+- device_type: cisco_ios
+  host: 192.168.139.1
   username: cisco
   password: cisco
-  enable_password: cisco
-- ip: 192.168.100.2
+  secret: cisco
+  timeout: 5
+- device_type: cisco_ios
+  host: 192.168.139.2
   username: cisco
   password: cisco
-  enable_password: cisco
-- ip: 192.168.100.3
+  secret: cisco
+  timeout: 5
+- device_type: cisco_ios
+  host: 192.168.139.3
   username: cisco
   password: cisco
-  enable_password: cisco
+  secret: cisco
+  timeout: 5

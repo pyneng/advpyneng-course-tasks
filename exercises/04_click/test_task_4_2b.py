@@ -15,7 +15,7 @@ if not isinstance(__loader__, AssertionRewritingHook):
 
 
 def test_cli(first_router_from_devices_yaml):
-    ip = first_router_from_devices_yaml["ip"]
+    host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
     enable_password = first_router_from_devices_yaml["enable_password"]
@@ -28,7 +28,7 @@ def test_cli(first_router_from_devices_yaml):
         cli,
         [
             "sh clock",
-            ip,
+            host,
             "-u",
             username,
             "-p",
@@ -40,7 +40,7 @@ def test_cli(first_router_from_devices_yaml):
     )
     assert (
         result.exit_code == 0
-    ), f'CLI не отработал с таким вызовом python task_4_2b.py "sh clock" {ip} -u {username} -p {password} -s {enable_password} --timed'
+    ), f'CLI не отработал с таким вызовом python task_4_2b.py "sh clock" {host} -u {username} -p {password} -s {enable_password} --timed'
     correct_stdout = "время выполнения скрипта"
     assert (
         correct_stdout in result.stdout.lower()

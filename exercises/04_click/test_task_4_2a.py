@@ -15,7 +15,7 @@ if not isinstance(__loader__, AssertionRewritingHook):
 
 
 def test_cli(first_router_from_devices_yaml):
-    ip = first_router_from_devices_yaml["ip"]
+    host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
     enable_password = first_router_from_devices_yaml["enable_password"]
@@ -26,15 +26,15 @@ def test_cli(first_router_from_devices_yaml):
     runner = CliRunner()
     result = runner.invoke(
         cli,
-        ["sh clock", ip, "-u", username, "-p", password, "-s", enable_password],
+        ["sh clock", host, "-u", username, "-p", password, "-s", enable_password],
     )
     assert (
         result.exit_code == 0
-    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {ip} -u {username} -p {password} -s {enable_password}'
+    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {host} -u {username} -p {password} -s {enable_password}'
 
 
 def test_cli_input_enable_password(first_router_from_devices_yaml):
-    ip = first_router_from_devices_yaml["ip"]
+    host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
     enable_password = first_router_from_devices_yaml["enable_password"]
@@ -45,16 +45,16 @@ def test_cli_input_enable_password(first_router_from_devices_yaml):
     runner = CliRunner()
     result = runner.invoke(
         cli,
-        ["sh clock", ip, "-u", username, "-p", password],
+        ["sh clock", host, "-u", username, "-p", password],
         input=enable_password,
     )
     assert (
         result.exit_code == 0
-    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {ip} -u {username} -p {password}'
+    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {host} -u {username} -p {password}'
 
 
 def test_cli_input_username(first_router_from_devices_yaml):
-    ip = first_router_from_devices_yaml["ip"]
+    host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
     enable_password = first_router_from_devices_yaml["enable_password"]
@@ -65,9 +65,9 @@ def test_cli_input_username(first_router_from_devices_yaml):
     runner = CliRunner()
     result = runner.invoke(
         cli,
-        ["sh clock", ip, "-p", password, "-s", enable_password],
+        ["sh clock", host, "-p", password, "-s", enable_password],
         input=username,
     )
     assert (
         result.exit_code == 0
-    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {ip} -u {username} -p {password}'
+    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {host} -u {username} -p {password}'

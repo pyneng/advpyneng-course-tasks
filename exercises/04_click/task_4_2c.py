@@ -21,23 +21,24 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pprint import pprint
 import yaml
-from cisco_telnet_class import CiscoTelnet
+from netmiko import Netmiko
 
 
 def send_show_command(device, command):
-    with CiscoTelnet(**device) as t:
-        output = t.send_show_command(command)
-    return output
+    with Netmiko(**device) as ssh:
+        ssh.enable()
+        result = ssh.send_command(command)
+    return result
 
 
 def send_command_to_devices(devices, command, threads=5):
     results = []
     with ThreadPoolExecutor(max_workers=threads) as executor:
-        futures = [
+        task_list = [
             executor.submit(send_show_command, device, command) for device in devices
         ]
-        for future in as_completed(futures):
-            results.append(future.result())
+        for task in as_completed(task_list):
+            results.append(task.result())
     return results
 
 

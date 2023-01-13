@@ -13,7 +13,7 @@ Usage: task_4_3.py [OPTIONS] COMMAND [ARGS]...
   потоках THREADS
 
 Options:
-  -y, --yaml-params FILENAME   [default: devices_task_4_3.yaml]
+  -y, --yaml-params FILENAME   [default: devices.yaml]
   -t, --threads INTEGER RANGE  [default: 5]
   --help                       Show this message and exit.
 
@@ -59,7 +59,7 @@ Options:
 
 Команда config отправляет команды из файла, который передается как аргумент на все указанные устройства:
 
-$ python task_4_3.py -y devices_task_4_3.yaml config config_commands.txt
+$ python task_4_3.py -y devices.yaml config config_commands.txt
 {'192.168.100.1': 'configure terminal\n'
                   'Enter configuration commands, one per line.  End with CNTL/Z.\n'
                   'R1(config)#interface Loopback99\n'
@@ -79,22 +79,22 @@ $ python task_4_3.py -y devices_task_4_3.yaml config config_commands.txt
                   'R3(config-if)#end\n'
                   'R3#'}
 
-Команда ping пингует устройства из файла -y devices_task_4_3.yaml:
+Команда ping пингует устройства из файла -y devices.yaml:
 
-$ python task_4_3.py -y devices_task_4_3.yaml ping
+$ python task_4_3.py -y devices.yaml ping
 Доступные адреса:   192.168.100.1, 192.168.100.2, 192.168.100.3
 Недоступные адреса:
 
-Команда show отправляет указанную команду show на все указанные устройства из файла -y devices_task_4_3.yaml и выводит результат:
+Команда show отправляет указанную команду show на все указанные устройства из файла -y devices.yaml и выводит результат:
 
-$ python task_4_3.py -y devices_task_4_3.yaml show "sh clock"
+$ python task_4_3.py -y devices.yaml show "sh clock"
 {'192.168.100.1': '*09:22:19.639 UTC Mon Sep 21 2020',
  '192.168.100.2': '*09:22:19.656 UTC Mon Sep 21 2020',
  '192.168.100.3': '*09:22:19.783 UTC Mon Sep 21 2020'}
 
 С опцией -p вывод команд парсится с помощью textfsm и выводится:
 
-$ python task_4_3.py -y devices_task_4_3.yaml show "sh ip int br" -p
+$ python task_4_3.py -y devices.yaml show "sh ip int br" -p
 {'192.168.100.1': [{'interface': 'FastEthernet0/0',
                     'ip': '192.168.100.1',
                     'protocol': 'up',
@@ -122,15 +122,16 @@ $ python task_4_3.py -y devices_task_4_3.yaml show "sh ip int br" -p
 
 Опция -o добавляет запись результата в файл (примеры файлов с записью данных выложены в каталоге 04_click):
 
-$ python task_4_3.py -y devices_task_4_3.yaml show "sh ip int br" -p -o result.yaml
-$ python task_4_3.py -y devices_task_4_3.yaml show "sh ip int br" -o result.txt""
+$ python task_4_3.py -y devices.yaml show "sh ip int br" -p -o result.yaml
+$ python task_4_3.py -y devices.yaml show "sh ip int br" -o result.txt""
 
+Для этого задания нет теста.
 """
 from concurrent.futures import ThreadPoolExecutor
 import subprocess
 from pprint import pprint
 import yaml
-from netmiko import ConnectHandler
+from netmiko import Netmiko
 from textfsm import clitable
 import click
 
@@ -164,14 +165,14 @@ def parse_command_dynamic(
 
 
 def send_cfg_commands(device, commands):
-    with ConnectHandler(**device) as ssh:
+    with Netmiko(**device) as ssh:
         ssh.enable()
         result = ssh.send_config_set(commands)
     return result
 
 
 def send_show_command(device, command):
-    with ConnectHandler(**device) as ssh:
+    with Netmiko(**device) as ssh:
         ssh.enable()
         result = ssh.send_command(command)
     return result
@@ -180,12 +181,12 @@ def send_show_command(device, command):
 def send_command_to_devices(devices, threads, show=None, config=None):
     result_dict = {}
     with ThreadPoolExecutor(max_workers=threads) as executor:
-        futures = []
+        task_list = []
         for device in devices:
             if show:
-                futures.append(executor.submit(send_show_command, device, show))
+                task_list.append(executor.submit(send_show_command, device, show))
             elif config:
-                futures.append(executor.submit(send_cfg_commands, device, config))
-        for device, future in zip(devices, futures):
-            result_dict[device["host"]] = future.result()
+                task_list.append(executor.submit(send_cfg_commands, device, config))
+        for device, task in zip(devices, task_list):
+            result_dict[device["host"]] = task.result()
     return result_dict
