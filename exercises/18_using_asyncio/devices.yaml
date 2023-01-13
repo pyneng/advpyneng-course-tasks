@@ -1,5 +1,5 @@
 - platform: cisco_iosxe
-  host: 192.168.100.1
+  host: 192.168.139.1
   auth_username: cisco
   auth_password: cisco
   auth_secondary: cisco
@@ -8,7 +8,7 @@
   timeout_transport: 10
   transport: asyncssh
 - platform: cisco_iosxe
-  host: 192.168.100.2
+  host: 192.168.139.2
   auth_username: cisco
   auth_password: cisco
   auth_secondary: cisco
@@ -17,7 +17,7 @@
   timeout_transport: 10
   transport: asyncssh
 - platform: cisco_iosxe
-  host: 192.168.100.3
+  host: 192.168.139.3
   auth_username: cisco
   auth_password: cisco
   auth_secondary: cisco
@@ -26,13 +26,13 @@
   timeout_transport: 10
   transport: asyncssh
 - device_type: cisco_ios
-  host: 192.168.100.1
+  host: 192.168.139.1
   username: cisco
   password: cisco
   secret: cisco
   timeout: 10
 - device_type: cisco_ios
-  host: 192.168.100.2
+  host: 192.168.139.2
   username: cisco
   password: cisco
   secret: cisco
