@@ -44,7 +44,7 @@ class CiscoSSH:
         host,
         username,
         password,
-        secret,
+        secret=None,
         pause=0.2,
         max_read=100000,
         read_timeout=2,
@@ -64,13 +64,15 @@ class CiscoSSH:
             allow_agent=False,
         )
         self._ssh = client.invoke_shell()
-        self._send_command("enable")
-        self._read_until("Password")
-        self._send_command(secret)
-        self._read_until("#")
-        self._send_command("terminal length 0")
-        self._read_until("#")
         self.prompt = self.get_prompt()
+        self._send_command("terminal length 0")
+        self._read_until("[>#]")
+        if secret and "#" not in self.prompt:
+            self._send_command("enable")
+            self._read_until("Password")
+            self._send_command(secret)
+            self._read_until("#")
+            self.prompt = self.get_prompt()
 
     def get_prompt(self):
         self._send_command("sh clock")
@@ -80,7 +82,7 @@ class CiscoSSH:
         if match:
             return match.group()
         else:
-            return "#"
+            raise ValueError("Couldn't find a prompt")
 
     def _send_command(self, command):
         self._ssh.send(f"{command}\n")
@@ -93,7 +95,7 @@ class CiscoSSH:
         self._ssh.settimeout(self.read_timeout)
         output = ""
         while True:
-            time.sleep(0.2)
+            time.sleep(self.pause)
             try:
                 part = self._ssh.recv(self.max_read).decode("utf-8")
                 output += part
@@ -132,7 +134,11 @@ class CiscoSSH:
 
 
 if __name__ == "__main__":
-    with CiscoSSH("192.168.100.1", "cisco", "cisco", "cisco") as r1:
+    with CiscoSSH(host="192.168.100.1", username="cisco", password="cisco", secret="cisco") as r1:
+        print(r1.send_show_command("sh ip int br"))
+        print(r1.send_config_commands("logging 5.5.5.5"))
+        print(r1.send_show_command("sh run | i ^logging"))
+
+    with CiscoSSH(host="192.168.100.1", username="cisco", password="cisco") as r1:
         print(r1.send_show_command("sh clock"))
         print(r1.send_show_command("sh ip int br"))
-        print(r1.send_show_command("sh run | i hostname"))
