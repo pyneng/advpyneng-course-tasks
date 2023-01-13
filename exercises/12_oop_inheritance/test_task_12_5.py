@@ -13,19 +13,41 @@ if not isinstance(__loader__, AssertionRewritingHook):
     print(f"Тесты нужно вызывать используя такое выражение:\npytest {__file__}\n\n")
 
 
-class ForTest(task_12_5.InheritanceMixin):
-    pass
-
 
 def test_class_created():
     check_class_exists(task_12_5, "InheritanceMixin")
 
 
-def test_mixin():
+def test_mixin_class():
+    class ForTest(task_12_5.InheritanceMixin):
+        pass
+
     ins = ForTest()
     check_attr_or_method(ins, method="subclasses")
     check_attr_or_method(ins, method="superclasses")
-    task_12_5.InheritanceMixin.subclasses()
-    task_12_5.InheritanceMixin.superclasses()
-    ins.subclasses()
-    ins.superclasses()
+    assert ForTest.superclasses() == [ForTest, task_12_5.InheritanceMixin, object]
+    assert ForTest.subclasses() == []
+
+
+def test_mixin_instance():
+    class ForTest(task_12_5.InheritanceMixin):
+        pass
+
+    ins = ForTest()
+    check_attr_or_method(ins, method="subclasses")
+    check_attr_or_method(ins, method="superclasses")
+    assert ins.superclasses() == [ForTest, task_12_5.InheritanceMixin, object]
+    assert ins.subclasses() == []
+
+
+def test_mixin_class():
+    class ForTest(task_12_5.InheritanceMixin):
+        pass
+
+    class ChildForTest(ForTest):
+        pass
+
+    c_ins = ChildForTest()
+    check_attr_or_method(c_ins, method="subclasses")
+    check_attr_or_method(c_ins, method="superclasses")
+    assert ForTest.subclasses() == [ChildForTest]

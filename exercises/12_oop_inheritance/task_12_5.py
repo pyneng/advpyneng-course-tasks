@@ -9,17 +9,29 @@
 
 Методы должны отрабатывать и при вызове через класс и при вызове
 через экземпляр:
-In [2]: A.subclasses()
-Out[2]: [__main__.B, __main__.D]
 
-In [3]: A.superclasses()
-Out[3]: [__main__.A, __main__.InheritanceMixin, object]
+In [1]: from task_12_5 import A, B, C, D, E
 
-In [4]: a.subclasses()
-Out[4]: [__main__.B, __main__.D]
+In [2]: A.superclasses()
+Out[2]: [task_12_5.A, task_12_5.InheritanceMixin, object]
 
-In [5]: a.superclasses()
-Out[5]: [__main__.A, __main__.InheritanceMixin, object]
+In [4]: A.subclasses()
+Out[4]: [task_12_5.B, task_12_5.D]
+
+In [5]: a = A()
+
+In [6]: a.superclasses()
+Out[6]: [task_12_5.A, task_12_5.InheritanceMixin, object]
+
+In [7]: a.subclasses()
+Out[7]: [task_12_5.B, task_12_5.D]
+
+In [8]: D.superclasses()
+Out[8]: [task_12_5.D, task_12_5.A, task_12_5.C, task_12_5.InheritanceMixin, object]
+
+In [9]: D.subclasses()
+Out[9]: []
+
 
 В задании заготовлена иерархия классов, надо сделать так, чтобы у всех
 этих классов повились методы subclasses и superclasses.
@@ -27,7 +39,11 @@ Out[5]: [__main__.A, __main__.InheritanceMixin, object]
 """
 
 
-class A:
+class InheritanceMixin:
+    pass
+
+
+class A(InheritanceMixin):
     pass
 
 
@@ -35,7 +51,11 @@ class B(A):
     pass
 
 
-class C:
+class E(B):
+    pass
+
+
+class C(InheritanceMixin):
     pass
 
 
