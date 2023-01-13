@@ -19,11 +19,11 @@ In [3]: r1('close')
 для заданий используются другие адреса/логины, надо заменить их в словаре.
 """
 
-from netmiko import ConnectHandler
+from netmiko import Netmiko
 
 device_params = {
     "device_type": "cisco_ios",
-    "ip": "192.168.100.1",
+    "ip": "192.168.139.1",
     "username": "cisco",
     "password": "cisco",
     "secret": "cisco",
@@ -31,7 +31,7 @@ device_params = {
 
 
 def netmiko_ssh(**params_dict):
-    ssh = ConnectHandler(**params_dict)
+    ssh = Netmiko(**params_dict)
     ssh.enable()
 
     def send_show_command(command):
