@@ -11,7 +11,7 @@ $ python task_5_2.py
 10:18:57 - cisco_ssh_class - DEBUG - SSH подключение к 192.168.139.1
 10:18:58 - cisco_ssh_class - DEBUG - Отправка команды sh clock на 192.168.139.1
 sh clock
-*10:19:43.886 UTC Fri Sep 11 2020
+*10:19:43.886 UTC Fri Sep 29 2022
 R1#
 
 При этом нельзя менять код в файле cisco_ssh_class.py.
