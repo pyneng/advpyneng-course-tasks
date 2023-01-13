@@ -37,7 +37,7 @@ def test_retry_success(capsys):
     assert correct_stdout in out, "На stdout должно выводиться сообщение"
 
 
-def test_retry_failed(capsys):
+def test_retry_2(capsys):
     @task_8_4.retry(2)
     def do_thing(a, b):
         print("done")
@@ -51,4 +51,21 @@ def test_retry_failed(capsys):
     assert out != "", "На stdout не выведена информация"
     assert (
         out.count(correct_stdout) == 3
-    ), "При каждом выполнении функции на stdout должно выводиться сообщение"
+    ), "При настройке retry(2) сумммарно должно быть 3 вызова декорируемой функции"
+
+
+def test_retry_3(capsys):
+    @task_8_4.retry(3)
+    def do_thing(a, b):
+        print("done")
+        return None
+
+    return_value = do_thing(2, 3)
+
+    # должно выводиться сообщение со временем выполнения
+    correct_stdout = "done"
+    out, err = capsys.readouterr()
+    assert out != "", "На stdout не выведена информация"
+    assert (
+        out.count(correct_stdout) == 4
+    ), "При настройке retry(3) сумммарно должно быть 4 вызова декорируемой функции"
