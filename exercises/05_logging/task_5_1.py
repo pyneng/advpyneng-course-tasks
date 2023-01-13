@@ -4,7 +4,8 @@
 
 Добавить логирование в скрипт с выводом информации на стандартный поток вывода.
 Формат логов и сообщения надо определить из примеров вывода ниже. Кроме того,
-это должен быть единственный вывод модуля logging, сообщения других модулей надо выводить только если их уровень WARNING.
+это должен быть единственный вывод модуля logging, сообщения других модулей
+надо выводить только если их уровень WARNING.
 
 
 Пример вывода при успешном подключении на все три устройства:
@@ -41,7 +42,7 @@ ThreadPoolExecutor-0_2 2020-09-11 10:07:52,104 root DEBUG: Подключени�
 ThreadPoolExecutor-0_1 2020-09-11 10:07:53,462 root DEBUG: Получен ответ от 192.168.100.2
 ThreadPoolExecutor-0_2 2020-09-11 10:07:53,589 root DEBUG: Получен ответ от 192.168.100.3
 ThreadPoolExecutor-0_0 2020-09-11 10:08:13,343 root WARNING: Не получилось перейти в режим enable
-{'192.168.100.1': ValueError("Failed to enter enable mode. Please ensure you pass the 'secret' argument to ConnectHandler."),
+{'192.168.100.1': ValueError("Failed to enter enable mode. Please ensure you pass the 'secret' argument to Netmiko."),
  '192.168.100.2': '*10:07:53.219 UTC Fri Sep 11 2020',
  '192.168.100.3': '*10:07:53.347 UTC Fri Sep 11 2020'}
 
@@ -74,14 +75,13 @@ from concurrent.futures import ThreadPoolExecutor
 from pprint import pprint
 from itertools import repeat
 import yaml
-from netmiko import ConnectHandler
+from netmiko import Netmiko
 from netmiko.ssh_exception import SSHException
 
 
 def send_show(device_dict, command):
-    ip = device_dict["host"]
     try:
-        with ConnectHandler(**device_dict) as ssh:
+        with Netmiko(**device_dict) as ssh:
             ssh.enable()
             result = ssh.send_command(command)
         return result
@@ -101,6 +101,6 @@ def send_command_to_devices(devices, command, max_workers=5):
 
 
 if __name__ == "__main__":
-    with open("devices_netmiko.yaml") as f:
+    with open("devices.yaml") as f:
         devices = yaml.safe_load(f)
     pprint(send_command_to_devices(devices, "sh clock"))

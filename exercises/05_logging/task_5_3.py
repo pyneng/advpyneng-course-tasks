@@ -57,7 +57,7 @@ import re
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-from netmiko import ConnectHandler
+from netmiko import Netmiko
 from netmiko.ssh_exception import SSHException
 
 
@@ -76,7 +76,7 @@ def parse_cdp(output):
 
 def connect_ssh(params, command):
     try:
-        with ConnectHandler(**params) as ssh:
+        with Netmiko(**params) as ssh:
             ssh.enable()
             prompt = ssh.find_prompt()
             local_host = re.search(r"(\S+)[>#]", prompt).group(1)
@@ -122,8 +122,6 @@ if __name__ == "__main__":
         "username": "cisco",
         "timeout": 4,
     }
-    with open("devices.yaml") as f:
-        devices = yaml.safe_load(f)
 
     start = "192.168.100.1"
     topology = explore_topology(start, ssh_params=common_params)
