@@ -57,8 +57,11 @@ import re
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-from netmiko import Netmiko
-from netmiko.ssh_exception import SSHException
+from netmiko import (
+    Netmiko,
+    NetmikoBaseException,
+    ReadException
+)
 
 
 def parse_cdp(output):
@@ -81,7 +84,7 @@ def connect_ssh(params, command):
             prompt = ssh.find_prompt()
             local_host = re.search(r"(\S+)[>#]", prompt).group(1)
             return local_host, ssh.send_command(command)
-    except SSHException as error:
+    except (NetmikoBaseException, SSHException) as error:
         print(error)
 
 

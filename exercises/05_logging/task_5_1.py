@@ -16,9 +16,9 @@ ThreadPoolExecutor-0_2 2023-01-13 17:11:02,394 root DEBUG: Подключени�
 ThreadPoolExecutor-0_1 2023-01-13 17:11:02,686 root DEBUG: Получен ответ от 192.168.139.2
 ThreadPoolExecutor-0_0 2023-01-13 17:11:02,762 root DEBUG: Получен ответ от 192.168.139.1
 ThreadPoolExecutor-0_2 2023-01-13 17:11:02,857 root DEBUG: Получен ответ от 192.168.139.3
-{'192.168.100.1': '*17:07:17.869 UTC Fri Jan 13 2023',
- '192.168.100.2': '*17:07:17.832 UTC Fri Jan 13 2023',
- '192.168.100.3': '*17:07:17.833 UTC Fri Jan 13 2023'}
+{'192.168.139.1': '*17:07:17.869 UTC Fri Jan 13 2023',
+ '192.168.139.2': '*17:07:17.832 UTC Fri Jan 13 2023',
+ '192.168.139.3': '*17:07:17.833 UTC Fri Jan 13 2023'}
 
 
 Пример вывода при ошибке аутентификации на первом устройстве (неправильный пароль):
@@ -35,15 +35,15 @@ Common causes of this problem are:
 2. Incorrect SSH-key file
 3. Connecting to the wrong device
 
-Device settings: cisco_ios 192.168.100.1:22
+Device settings: cisco_ios 192.168.139.1:22
 
 
 Authentication failed.
-{'192.168.100.1': NetmikoAuthenticationException('Authentication to device failed.\n\nCommon causes of this problem ar
+{'192.168.139.1': NetmikoAuthenticationException('Authentication to device failed.\n\nCommon causes of this problem ar
 e:\n1. Invalid username and password\n2. Incorrect SSH-key file\n3. Connecting to the wrong device\n\nDevice settings:
- cisco_ios 192.168.100.1:22\n\n\nAuthentication failed.'),
- '192.168.100.2': '*17:08:43.018 UTC Fri Jan 13 2023',
- '192.168.100.3': '*17:08:43.009 UTC Fri Jan 13 2023'}
+ cisco_ios 192.168.139.1:22\n\n\nAuthentication failed.'),
+ '192.168.139.2': '*17:08:43.018 UTC Fri Jan 13 2023',
+ '192.168.139.3': '*17:08:43.009 UTC Fri Jan 13 2023'}
 
 
 Пример вывода при ошибке перехода в enable на первом устройстве (неправильный пароль на enable):
@@ -54,12 +54,12 @@ ThreadPoolExecutor-0_2 2023-01-13 17:11:02,104 root DEBUG: Подключени�
 ThreadPoolExecutor-0_1 2023-01-13 17:11:02,462 root DEBUG: Получен ответ от 192.168.139.2
 ThreadPoolExecutor-0_2 2023-01-13 17:11:02,589 root DEBUG: Получен ответ от 192.168.139.3
 ThreadPoolExecutor-0_0 2023-01-13 17:11:38,736 root WARNING: Не получилось перейти в режим enable
-{'192.168.100.1': ReadTimeout("\n\nPattern not detected: 'R1' in output.\n\nThings you might try to fix this:\n1. Adju
+{'192.168.139.1': ReadTimeout("\n\nPattern not detected: 'R1' in output.\n\nThings you might try to fix this:\n1. Adju
 st the regex pattern to better identify the terminating string. Note, in\nmany situations the pattern is automatically
  based on the network device's prompt.\n2. Increase the read_timeout to a larger value.\n\nYou can also look at the Ne
 tmiko session_log or debug log for more information.\n\n"),
- '192.168.100.2': '*17:10:19.100 UTC Fri Jan 13 2023',
- '192.168.100.3': '*17:10:19.125 UTC Fri Jan 13 2023'}
+ '192.168.139.2': '*17:10:19.139 UTC Fri Jan 13 2023',
+ '192.168.139.3': '*17:10:19.125 UTC Fri Jan 13 2023'}
 
 Пример вывода при недоступном IP-адресе:
 $ python task_5_1.py
@@ -75,14 +75,14 @@ Common causes of this problem are:
 2. Wrong TCP port.
 3. Intermediate firewall blocking access.
 
-Device settings: cisco_ios 192.168.100.13:22
+Device settings: cisco_ios 192.168.139.13:22
 
 
-{'192.168.100.13': NetmikoTimeoutException('TCP connection to device failed.\n\nCommon causes of this problem are:\n1.
- Incorrect hostname or IP address.\n2. Wrong TCP port.\n3. Intermediate firewall blocking access.\n\nDevice settings: 
-cisco_ios 192.168.100.13:22\n\n'),
- '192.168.100.2': '*17:11:07.731 UTC Fri Jan 13 2023',
- '192.168.100.3': '*17:11:07.585 UTC Fri Jan 13 2023'}
+{'192.168.139.13': NetmikoTimeoutException('TCP connection to device failed.\n\nCommon causes of this problem are:\n1.
+ Incorrect hostname or IP address.\n2. Wrong TCP port.\n3. Intermediate firewall blocking access.\n\nDevice settings:
+cisco_ios 192.168.139.13:22\n\n'),
+ '192.168.139.2': '*17:11:07.731 UTC Fri Jan 13 2023',
+ '192.168.139.3': '*17:11:07.585 UTC Fri Jan 13 2023'}
 
 
 Для заданий этого раздела нет тестов.
