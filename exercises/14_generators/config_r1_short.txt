@@ -1,0 +1,22 @@
+Current configuration : 4052 bytes
+!
+! Last configuration change at 13:13:40 UTC Tue Mar 1 2016
+version 15.2
+no service timestamps debug uptime
+no service timestamps log uptime
+no service password-encryption
+!
+hostname PE_r1
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input all
+!
+!
+end

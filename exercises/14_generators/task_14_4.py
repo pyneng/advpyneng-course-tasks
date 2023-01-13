@@ -16,12 +16,12 @@
 from itertools import repeat
 from concurrent.futures import ThreadPoolExecutor
 
-from netmiko import ConnectHandler
+from netmiko import Netmiko
 import yaml
 
 
 def send_show_command(device, command):
-    with ConnectHandler(**device) as ssh:
+    with Netmiko(**device) as ssh:
         ssh.enable()
         result = ssh.send_command(command)
         prompt = ssh.find_prompt()
