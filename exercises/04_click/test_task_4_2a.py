@@ -18,7 +18,7 @@ def test_cli(first_router_from_devices_yaml):
     host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
-    enable_password = first_router_from_devices_yaml["enable_password"]
+    secret = first_router_from_devices_yaml["secret"]
 
     assert isinstance(
         cli, click.core.Command
@@ -26,18 +26,18 @@ def test_cli(first_router_from_devices_yaml):
     runner = CliRunner()
     result = runner.invoke(
         cli,
-        ["sh clock", host, "-u", username, "-p", password, "-s", enable_password],
+        ["sh clock", host, "-u", username, "-p", password, "-s", secret],
     )
     assert (
         result.exit_code == 0
-    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {host} -u {username} -p {password} -s {enable_password}'
+    ), f'CLI не отработал с таким вызовом python task_4_2a.py "sh clock" {host} -u {username} -p {password} -s {secret}'
 
 
-def test_cli_input_enable_password(first_router_from_devices_yaml):
+def test_cli_input_secret(first_router_from_devices_yaml):
     host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
-    enable_password = first_router_from_devices_yaml["enable_password"]
+    secret = first_router_from_devices_yaml["secret"]
 
     assert isinstance(
         cli, click.core.Command
@@ -46,7 +46,7 @@ def test_cli_input_enable_password(first_router_from_devices_yaml):
     result = runner.invoke(
         cli,
         ["sh clock", host, "-u", username, "-p", password],
-        input=enable_password,
+        input=secret,
     )
     assert (
         result.exit_code == 0
@@ -57,7 +57,7 @@ def test_cli_input_username(first_router_from_devices_yaml):
     host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
-    enable_password = first_router_from_devices_yaml["enable_password"]
+    secret = first_router_from_devices_yaml["secret"]
 
     assert isinstance(
         cli, click.core.Command
@@ -65,7 +65,7 @@ def test_cli_input_username(first_router_from_devices_yaml):
     runner = CliRunner()
     result = runner.invoke(
         cli,
-        ["sh clock", host, "-p", password, "-s", enable_password],
+        ["sh clock", host, "-p", password, "-s", secret],
         input=username,
     )
     assert (

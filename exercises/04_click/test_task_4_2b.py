@@ -18,7 +18,7 @@ def test_cli(first_router_from_devices_yaml):
     host = first_router_from_devices_yaml["host"]
     username = first_router_from_devices_yaml["username"]
     password = first_router_from_devices_yaml["password"]
-    enable_password = first_router_from_devices_yaml["enable_password"]
+    secret = first_router_from_devices_yaml["secret"]
 
     assert isinstance(
         cli, click.core.Command
@@ -34,13 +34,13 @@ def test_cli(first_router_from_devices_yaml):
             "-p",
             password,
             "-s",
-            enable_password,
+            secret,
             "--timed",
         ],
     )
     assert (
         result.exit_code == 0
-    ), f'CLI не отработал с таким вызовом python task_4_2b.py "sh clock" {host} -u {username} -p {password} -s {enable_password} --timed'
+    ), f'CLI не отработал с таким вызовом python task_4_2b.py "sh clock" {host} -u {username} -p {password} -s {secret} --timed'
     correct_stdout = "время выполнения скрипта"
     assert (
         correct_stdout in result.stdout.lower()
