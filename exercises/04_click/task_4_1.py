@@ -18,8 +18,9 @@ $ python task_4_1.py --help
 Usage: task_4_1.py [OPTIONS] CDP_FILENAMES...
 
 Options:
-  -o, --output-filename TEXT  [required]
+  -o, --output-filename PATH  [required]
   --help                      Show this message and exit.
+
 
 Примеры использования скрипта:
 
