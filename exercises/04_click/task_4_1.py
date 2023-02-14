@@ -25,8 +25,13 @@ Options:
 Примеры использования скрипта:
 
 $ python task_4_1.py sh_cdp_n_sw1.txt sh_cdp_n_r1.txt -o result.csv
+$ python task_4_1.py sh_cdp_n_sw1.txt sh_cdp_n_r2.txt sh_cdp_n_r3.txt sh_cdp_n_r4.txt -o result.csv
+$ python task_4_1.py sh_cdp_n_r1.txt -o result.csv
+
+Для linux/mac (shell с поддержкой glob)
 $ python task_4_1.py sh_cdp_n_* -o result.csv
 $ python task_4_1.py sh_cdp_n_r[1-4]* -o result.csv
+
 
 Функции parse_sh_cdp_neighbors и parse_cdp_to_csv менять нельзя.
 
