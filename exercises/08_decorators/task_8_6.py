@@ -15,6 +15,19 @@
 * __lt__ - операция <
 
 Если методы __eq__ и __lt__ не определены, сгенерировать исключение ValueError при декорации.
+Проверить наличие методов можно с помощью функции vars:
+In [2]: vars(IPAddress)
+Out[2]:
+mappingproxy({'__module__': '__main__',
+              '__init__': <function __main__.IPAddress.__init__(self, ip)>,
+              '__repr__': <function __main__.IPAddress.__repr__(self)>,
+              '__eq__': <function __main__.IPAddress.__eq__(self, other)>,
+              '__lt__': <function __main__.IPAddress.__lt__(self, other)>,
+              '__dict__': <attribute '__dict__' of 'IPAddress' objects>,
+              '__weakref__': <attribute '__weakref__' of 'IPAddress' objects>,
+              '__doc__': None,
+              '__hash__': None})
+
 
 Проверить работу декоратора можно на примере класса IPAddress. Класс нельзя менять,
 можно только декорировать.
