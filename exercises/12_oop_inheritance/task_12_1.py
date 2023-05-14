@@ -21,7 +21,7 @@
 show и возвращает ее вывод в виде строки. Метод ожидает как аргумент одну команду.
 
 Пример работы класса:
-In [1]: r1 = CiscoTelnet('192.168.100.1', 'cisco', 'cisco', 'cisco')
+In [1]: r1 = CiscoTelnet('192.168.139.1', 'cisco', 'cisco', enable='cisco')
 
 Метод send_config_commands:
 In [3]: r1.send_config_commands('logging 7.7.7.7')
